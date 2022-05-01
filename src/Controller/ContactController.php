@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Factory\JsonResponseFactory;
+use App\Form\ContactTypeFormType;
+use App\Repository\ContactRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -17,16 +19,24 @@ class ContactController extends AbstractController
     public function __construct(
         public EntityManagerInterface $em,
         public  ManagerRegistry $doctrine,
+        public ContactRepository $contactRepository,
         private JsonResponseFactory $jsonResponseFactory
     ) {}
 
     #[Route('/contacts', name: 'contact', methods: 'GET')]
-    public function index(): Response
+    public function index(Request $request = null): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ContactController.php',
-        ]);
+        try {
+            $query = $request->query->get('name');
+            if($query){
+                $contacts = $this->contactRepository->search($query);
+            }else{
+                $contacts = $this->contactRepository->getAllContacts();
+            }
+            return $this->json($contacts);
+        }catch (Exception $exception){
+            return $this->json($exception->getMessage());
+        }
     }
 
     #[Route('/contact', name: 'store_contact', methods: 'POST')]
@@ -50,13 +60,13 @@ class ContactController extends AbstractController
             // actually executes the queries (i.e. the INSERT query)
             $entityManager->flush();
             $this->em->getConnection()->commit();
-            return $this->jsonResponseFactory->create($contact);
+            return $this->jsonResponseFactory->create($contact, 201);
         }catch (Exception $exception){
             return $this->json($exception->getMessage());
         }
     }
 
-    #[Route('/contact/edit/{id}', name: 'edit_contact', methods: 'PUT')]
+    #[Route('/contact/edit/{id}', name: 'edit_contact', methods: 'PATCH')]
     public function edit(Request $request, int $id): Response
     {
         $data = $request->toArray();
@@ -64,9 +74,10 @@ class ContactController extends AbstractController
         try{
             $contact = $this->em->getRepository(Contact::class)->find($id);
             if(!$contact){
-                return $this->json('The contact cannot be found', $id, 404);
+                throw $this->createNotFoundException(
+                    'The contact cannot be found '.$id
+                );
             }
-
             $contact->setFirstName($data['first_name']);
             $contact->setLastName($data['last_name']);
             $contact->setAddress($data['address']);
@@ -77,7 +88,7 @@ class ContactController extends AbstractController
 
             $entityManager->flush();
             $this->em->getConnection()->commit();
-            return $this->jsonResponseFactory->create($contact);
+            return $this->jsonResponseFactory->create($contact, 200);
         }catch (Exception $exception){
             return $this->json($exception->getMessage());
         }
@@ -89,7 +100,7 @@ class ContactController extends AbstractController
         try {
             $contact = $this->em->getRepository(Contact::class)->find($id);
             if (!$contact){
-                return $this->json('The contact cannot be found', $id, 404);
+                return $this->json('The contact cannot be found '. $id, 404);
             }
             $this->em->remove($contact);
             $this->em->flush();

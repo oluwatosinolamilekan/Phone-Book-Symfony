@@ -33,4 +33,9 @@ Below are the steps you need to successfully set up and run the application.
 - Run symfony server start
 
 ## Running Test
+
+> php bin/console --env=test doctrine:database:create
+
+> php bin/console --env=test doctrine:schema:create
+
 > php bin/phpunit
