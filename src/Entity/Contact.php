@@ -2,10 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ContactRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
+#[ApiResource(
+    collectionOperations: ['get', 'post'],
+    itemOperations: ['get','put', 'patch'],
+    attributes: ['pagination_items_per_page' => 5],
+)]
 class Contact
 {
     #[ORM\Id]
