@@ -53,35 +53,42 @@ $ php bin/phpunit
 ---
 There are four routes included on this project to be used.
 
-- Method: GET `http://127.0.0.1:8000/contacts`.
-
+- Method: GET `http://127.0.0.1:8000/contacts` 
+- Method: GET `http://127.0.0.1:8000/contacts?name=Jane` for searching for contact name
 ---
 
-- Method: POST `http://127.0.0.1:8000/contact/store`.
+- Method: POST `http://127.0.0.1:8000/contact/store`
 
 - Body:
 ```
     {
-        "first_name": "Lekan",
-        "last_name": "Lekan",
-        "address": "Yo, 22 Adkdjd",
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "address": "Frankfurt am Main, Hessen",
         "phone_number": "1039398383",
         "birthday": "10/2/2021",
-        "email": "yo@mail.com"
+        "email": "doe@gmalillydoo.com"
     }
 ```
 
 ---
 
-- Method: PUT `http://127.0.0.1:8000/contact/edit/1`.
-
-- Response:
-
+- Method: PUT `http://127.0.0.1:8000/contact/edit/1`
+    
+- Body:
+```
+    {
+        "first_name": "Lilly",
+        "last_name": "Doe",
+        "address": "Frankfurt am Main, Hessen",
+        "phone_number": "1039398383",
+        "birthday": "10/2/2021",
+        "email": "doe@gmalillydoo.com"
+    }
+```
 ---
 
 
-- Method: DELETE `http://127.0.0.1:8000/contact/delete/1`.
-
-- Response:
+- Method: DELETE `http://127.0.0.1:8000/contact/delete/1`
 
 ---
