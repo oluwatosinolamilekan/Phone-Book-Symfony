@@ -54,10 +54,8 @@ class ContactController extends AbstractController
             $contact->setBirthday($data['birthday']);
             $contact->setEmail($data['email']);
 
-            // tell Doctrine you want to (eventually) save the Contact (no queries yet)
             $entityManager->persist($contact);
 
-            // actually executes the queries (i.e. the INSERT query)
             $entityManager->flush();
             $this->em->getConnection()->commit();
             return $this->jsonResponseFactory->create($contact, 201);
