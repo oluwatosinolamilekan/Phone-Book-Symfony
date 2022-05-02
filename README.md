@@ -22,7 +22,7 @@ Each contact will need the following information:
 
 - PHP 8.0
 - Symfony
-- Mysql
+- Mysql or Postgresql or Sqlite
 
 ## How to run the application
 Below are the steps you need to successfully set up and run the application.
