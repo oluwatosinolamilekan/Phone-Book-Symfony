@@ -6,6 +6,7 @@ use App\Entity\Contact;
 use App\Factory\JsonResponseFactory;
 use App\Form\ContactTypeFormType;
 use App\Repository\ContactRepository;
+use App\Request\ContactRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -40,9 +41,10 @@ class ContactController extends AbstractController
     }
 
     #[Route('/contact', name: 'store_contact', methods: 'POST')]
-    public function store(Request $request): Response
+    public function store(ContactRequest $request): Response
     {
-        $data = $request->toArray();
+        $data = $request->validate();
+//        $data = $request->toArray();
         $entityManager = $this->doctrine->getManager();
         try {
             $this->em->getConnection()->beginTransaction();

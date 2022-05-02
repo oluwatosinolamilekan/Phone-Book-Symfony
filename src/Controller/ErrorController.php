@@ -8,6 +8,6 @@ class ErrorController extends AbstractController
 {
     public function show()
     {
-
+        dd('hi');
     }
 }
