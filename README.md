@@ -34,7 +34,7 @@ $ cp .env.example .env
 $ php bin/console doctrine:database:create
 $ php bin/console make:migration
 $ php bin/console doctrine:migrations:migrate
-$ symfony server start
+$ symfony server:start
 ```
 
 ## Running Test
