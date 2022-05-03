@@ -29,13 +29,12 @@ abstract class BaseRequest
         foreach ($errors as $message) {
             $messages['errors'][] = [
                 'property' => $message->getPropertyPath(),
-                'value' => $message->getInvalidValue(),
                 'message' => $message->getMessage(),
             ];
         }
 
         if (count($messages['errors']) > 0) {
-            $response = new JsonResponse($messages);
+            $response = new JsonResponse($messages, 400);
             $response->send();
 
             exit;
@@ -55,6 +54,8 @@ abstract class BaseRequest
             }
         }
     }
+
+
 
     protected function autoValidateRequest(): bool
     {

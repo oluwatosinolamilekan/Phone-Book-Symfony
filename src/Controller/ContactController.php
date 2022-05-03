@@ -11,9 +11,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ContactController extends AbstractController
 {
@@ -24,7 +26,7 @@ class ContactController extends AbstractController
         private JsonResponseFactory $jsonResponseFactory
     ) {}
 
-    #[Route('/contacts', name: 'contact', methods: 'GET')]
+    #[Route('/contact/index', name: 'contact', methods: 'GET')]
     public function index(Request $request = null): Response
     {
         try {
@@ -36,19 +38,23 @@ class ContactController extends AbstractController
             }
             return $this->json($contacts);
         }catch (Exception $exception){
-            return $this->json($exception->getMessage());
+            return $this->json([
+                'message' => $exception->getMessage(),
+            ]);
         }
     }
 
-    #[Route('/contact', name: 'store_contact', methods: 'POST')]
+    #[Route('/contact/store', name: 'store_contact', methods: 'POST')]
     public function store(ContactRequest $request): Response
     {
-        $data = $request->validate();
-//        $data = $request->toArray();
+        $contact = new Contact();
+
+        $request->validate();
+
         $entityManager = $this->doctrine->getManager();
         try {
             $this->em->getConnection()->beginTransaction();
-            $contact = new Contact();
+            $data = $request->getRequest()->toArray();
             $contact->setFirstName($data['first_name']);
             $contact->setLastName($data['last_name']);
             $contact->setAddress($data['address']);
@@ -56,13 +62,16 @@ class ContactController extends AbstractController
             $contact->setBirthday($data['birthday']);
             $contact->setEmail($data['email']);
 
+
             $entityManager->persist($contact);
 
             $entityManager->flush();
             $this->em->getConnection()->commit();
             return $this->jsonResponseFactory->create($contact, 201);
         }catch (Exception $exception){
-            return $this->json($exception->getMessage());
+            return $this->json([
+                'message' => $exception->getMessage(),
+            ]);
         }
     }
 
@@ -74,9 +83,12 @@ class ContactController extends AbstractController
         try{
             $contact = $this->em->getRepository(Contact::class)->find($id);
             if(!$contact){
-                throw $this->createNotFoundException(
-                    'The contact cannot be found '.$id
-                );
+                return $this->json([
+                    'message' => 'The contact cannot be found '. $id,
+                ], 404);
+//                throw $this->createNotFoundException(
+//                    'The contact cannot be found '.$id
+//                );
             }
             $contact->setFirstName($data['first_name']);
             $contact->setLastName($data['last_name']);
@@ -90,7 +102,9 @@ class ContactController extends AbstractController
             $this->em->getConnection()->commit();
             return $this->jsonResponseFactory->create($contact, 200);
         }catch (Exception $exception){
-            return $this->json($exception->getMessage());
+            return $this->json([
+                'message' => $exception->getMessage(),
+            ]);
         }
     }
 
@@ -100,13 +114,17 @@ class ContactController extends AbstractController
         try {
             $contact = $this->em->getRepository(Contact::class)->find($id);
             if (!$contact){
-                return $this->json('The contact cannot be found '. $id, 404);
+                return $this->json([
+                    'message' => 'The contact cannot be found '. $id,
+                ], 404);
             }
             $this->em->remove($contact);
             $this->em->flush();
             return $this->json('Deleted a contact successfully with id ' . $id);
         }catch (Exception $exception){
-            return $this->json($exception->getMessage());
+            return $this->json([
+                'message' => $exception->getMessage(),
+            ]);
         }
     }
 }
