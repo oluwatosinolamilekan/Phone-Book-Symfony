@@ -57,14 +57,16 @@ class ContactRepository extends ServiceEntityRepository
             ->setParameter('searchTerm', '%'.$data.'%')
             ->orWhere('a.last_name LIKE :searchTerm')
             ->setParameter('searchTerm', '%'.$data.'%')
-            ->getQuery()->getResult();
+            ->getQuery()
+            ->getResult();
     }
 
     public function getAllContacts(): array
     {
         return $this->createQueryBuilder('a')
             ->orderBy('a.first_name', 'ASC')
-            ->getQuery()->getResult();
+            ->getQuery()
+            ->getResult();
     }
 
     // /**
