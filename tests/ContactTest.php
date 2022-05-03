@@ -45,6 +45,38 @@ class ContactTest extends TestCase
         $this->assertEquals($this->customerData()['last_name'], $contact->getLastName());
     }
 
+    public function testCustomerAddress(): void
+    {
+        $contact = new Contact();
+        $contact->setAddress($this->customerData()['address']);
+
+        $this->assertEquals($this->customerData()['address'], $contact->getAddress());
+    }
+
+    public function testCustomerEmail(): void
+    {
+        $contact = new Contact();
+        $contact->setEmail($this->customerData()['email']);
+
+        $this->assertEquals($this->customerData()['email'], $contact->getEmail());
+    }
+
+    public function testCustomerBirthday(): void
+    {
+        $contact = new Contact();
+        $contact->setBirthday($this->customerData()['birthday']);
+
+        $this->assertEquals($this->customerData()['birthday'], $contact->getBirthday());
+    }
+
+    public function testCustomerPhoneNumber(): void
+    {
+        $contact = new Contact();
+        $contact->setPhoneNumber($this->customerData()['phone_number']);
+
+        $this->assertEquals($this->customerData()['phone_number'], $contact->getPhoneNumber());
+    }
+
     public function testReturnsCustomerFullName()
     {
         $customer = new Contact();
