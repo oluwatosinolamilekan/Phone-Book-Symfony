@@ -87,6 +87,7 @@ class ContactController extends AbstractController
                     'message' => 'The contact cannot be found '. $id,
                 ], 404); //
             }
+//            $this->createNotFoundException()
             $contact->setFirstName($data['first_name']);
             $contact->setLastName($data['last_name']);
             $contact->setAddress($data['address']);
