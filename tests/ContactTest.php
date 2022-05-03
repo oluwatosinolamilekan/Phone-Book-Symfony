@@ -3,12 +3,9 @@
 namespace App\Tests;
 
 use App\Entity\Contact;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
 use PHPUnit\Framework\TestCase;
 
-class ContactFeatureTesTest extends TestCase
+class ContactTest extends TestCase
 {
 //    public function testContactCreate(): void
 //    {
