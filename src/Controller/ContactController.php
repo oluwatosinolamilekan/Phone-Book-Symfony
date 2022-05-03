@@ -85,7 +85,7 @@ class ContactController extends AbstractController
             if(!$contact){
                 return $this->json([
                     'message' => 'The contact cannot be found '. $id,
-                ], 404);
+                ], 404); //
             }
             $contact->setFirstName($data['first_name']);
             $contact->setLastName($data['last_name']);

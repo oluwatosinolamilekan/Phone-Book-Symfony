@@ -54,7 +54,7 @@ $ php bin/phpunit
 There are four routes included on this project to be used.
 
 - Method: GET `http://127.0.0.1:8000/contacts` 
-- Method: GET `http://127.0.0.1:8000/contacts?name=Jane` for searching for contact name
+- Method: GET `http://127.0.0.1:8000/contacts?name=Jane` for searching with contact name
 ---
 - Method: POST `http://127.0.0.1:8000/contact/store`
 
