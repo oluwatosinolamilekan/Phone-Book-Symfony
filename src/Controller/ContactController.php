@@ -31,7 +31,7 @@ class ContactController extends AbstractController
     {
         try {
             $query = $request->query->get('name');
-            if($query){
+            if($query ){
                 $contacts = $this->contactRepository->search($query);
             }else{
                 $contacts = $this->contactRepository->getAllContacts();
@@ -86,9 +86,6 @@ class ContactController extends AbstractController
                 return $this->json([
                     'message' => 'The contact cannot be found '. $id,
                 ], 404);
-//                throw $this->createNotFoundException(
-//                    'The contact cannot be found '.$id
-//                );
             }
             $contact->setFirstName($data['first_name']);
             $contact->setLastName($data['last_name']);
