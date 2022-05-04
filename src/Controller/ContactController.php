@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Action\CreateContact;
 use App\Entity\Contact;
 use App\Factory\JsonResponseFactory;
 use App\Repository\ContactRepository;

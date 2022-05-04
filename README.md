@@ -20,7 +20,7 @@ Each contact will need the following information:
 
 ## Technologies
 
-- PHP 8.0
+- PHP 8.1
 - Symfony
 - Mysql or Postgresql or Sqlite
 
