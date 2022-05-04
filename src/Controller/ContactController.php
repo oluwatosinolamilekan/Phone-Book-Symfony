@@ -42,9 +42,7 @@ class ContactController extends AbstractController
             }
             return $this->json($contacts);
         }catch (Exception $exception){
-            return $this->json([
-                'message' => $exception->getMessage(),
-            ], 500);
+            return $this->customerResponse->errorResource($exception->getMessage());
         }
     }
 
@@ -65,9 +63,7 @@ class ContactController extends AbstractController
             $this->extracted($contact, $data, $entityManager);
             return $this->jsonResponseFactory->create($contact, 201);
         }catch (Exception $exception){
-            return $this->json([
-                'message' => $exception->getMessage(),
-            ],500);
+            return $this->customerResponse->errorResource($exception->getMessage());
         }
     }
 
@@ -91,9 +87,7 @@ class ContactController extends AbstractController
             $this->extracted($contact, $data, $entityManager);
             return $this->jsonResponseFactory->create($contact, 200);
         }catch (Exception $exception){
-            return $this->json([
-                'message' => $exception->getMessage(),
-            ], 500);
+            return $this->customerResponse->errorResource($exception->getMessage());
         }
     }
 
@@ -114,9 +108,7 @@ class ContactController extends AbstractController
             $this->em->flush();
             return $this->json('Deleted a contact successfully with id ' . $id);
         }catch (Exception $exception){
-            return $this->json([
-                'message' => $exception->getMessage(),
-            ]);
+            return $this->customerResponse->errorResource($exception->getMessage());
         }
     }
 
@@ -136,7 +128,7 @@ class ContactController extends AbstractController
         $contact->setPhoneNumber($data['phone_number']);
         $contact->setBirthday($data['birthday']);
         $contact->setEmail($data['email']);
-        if(isset($data['picture'])) $this->addImage($data['picture'], $contact);
+        if(isset($data['picture'])) $this->storeImage($data['picture'], $contact);
         $entityManager->persist($contact);
 
         $entityManager->flush();
@@ -148,7 +140,7 @@ class ContactController extends AbstractController
      * @param Contact|null $contact
      * @return void
      */
-    private function addImage(UploadedFile $pictureFile = null, Contact $contact = null)
+    private function storeImage(UploadedFile $pictureFile = null, Contact $contact = null)
     {
         if($pictureFile) {
             $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CustomerResponse extends AbstractController
 {
-    protected function deleteResource(): Response
+    public function deleteResource(): Response
     {
         return $this->json([
             'status' => 'success',
@@ -16,7 +16,7 @@ class CustomerResponse extends AbstractController
         ], 204);
     }
 
-    protected function errorResource($error): Response
+    public function errorResource($error): Response
     {
         return $this->json([
             'status' => 'success',
