@@ -2,6 +2,7 @@
 
 namespace App\Request;
 
+use Symfony\Component\Validator\Constraints\Blank;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ContactRequest extends BaseRequest
@@ -23,4 +24,7 @@ class ContactRequest extends BaseRequest
 
     #[NotBlank()]
     protected $email;
+
+    #[Blank()]
+    protected $picture;
 }

@@ -136,7 +136,7 @@ class ContactController extends AbstractController
         $contact->setPhoneNumber($data['phone_number']);
         $contact->setBirthday($data['birthday']);
         $contact->setEmail($data['email']);
-//        if(array_key_exists($data['picture'])) $this->addImage($data['picture'], $contact);
+        if(isset($data['picture'])) $this->addImage($data['picture'], $contact);
         $entityManager->persist($contact);
 
         $entityManager->flush();
