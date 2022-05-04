@@ -135,9 +135,4 @@ class Contact
 
         return $this;
     }
-
-    public function getCustomerFullName(): string
-    {
-        return $this->getFirstName() . '' . $this->getLastName();
-    }
 }

@@ -77,16 +77,6 @@ class ContactTest extends TestCase
         $this->assertEquals($this->customerData()['phone_number'], $contact->getPhoneNumber());
     }
 
-    public function testReturnsCustomerFullName()
-    {
-        $customer = new Contact();
-        $customer->setFirstName($this->customerData()['first_name']);
-        $customer->setLastName($this->customerData()['first_name']);
-
-        $fullName = $customer->getFirstName() . '' . $customer->getLastName();
-
-        $this->assertSame($fullName, $customer->getCustomerFullName());
-    }
 
     private function customerData(): array
     {
