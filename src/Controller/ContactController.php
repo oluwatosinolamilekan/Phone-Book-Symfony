@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Contact;
+use App\Controller\Response\CustomerResponse;
 use App\Factory\JsonResponseFactory;
 use App\Repository\ContactRepository;
 use App\Request\ContactRequest;
@@ -15,14 +16,14 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
 class ContactController extends AbstractController
 {
     public function __construct(
         public EntityManagerInterface $em,
         public  ManagerRegistry $doctrine,
         public ContactRepository $contactRepository,
-        private JsonResponseFactory $jsonResponseFactory
+        private JsonResponseFactory $jsonResponseFactory,
+        public CustomerResponse $customerResponse
     ) {}
 
     /**
@@ -48,6 +49,7 @@ class ContactController extends AbstractController
     }
 
     /**
+     * store the given customer.
      * @param ContactRequest $request
      * @return Response
      */
@@ -70,6 +72,7 @@ class ContactController extends AbstractController
     }
 
     /**
+     * Update the given customer.
      * @param ContactRequest $request
      * @param int $id
      * @return Response
@@ -82,9 +85,7 @@ class ContactController extends AbstractController
         try{
             $contact = $this->em->getRepository(Contact::class)->find($id);
             if(!$contact){
-                return $this->json([
-                    'message' => 'The contact cannot be found '. $id,
-                ], 404); // $this->createNotFoundException() method doesnt return status code
+                return $this->customerResponse->notFound('The contact cannot be found '. $id);
             }
 
             $this->extracted($contact, $data, $entityManager);
@@ -97,6 +98,7 @@ class ContactController extends AbstractController
     }
 
     /**
+     * delete the given customer.
      * @param int $id
      * @return Response
      */
@@ -106,9 +108,7 @@ class ContactController extends AbstractController
         try {
             $contact = $this->em->getRepository(Contact::class)->find($id);
             if (!$contact){
-                return $this->json([
-                    'message' => 'The contact cannot be found '. $id,
-                ], 404);
+                return $this->customerResponse->notFound('The contact cannot be found '. $id);
             }
             $this->em->remove($contact);
             $this->em->flush();
