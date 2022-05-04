@@ -7,7 +7,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class MyCustomProblemNormalizer implements NormalizerInterface
 {
-
     public function normalize($exception, string $format = null, array $context = [])
     {
         return [
