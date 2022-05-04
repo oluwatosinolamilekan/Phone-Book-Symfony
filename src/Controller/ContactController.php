@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,6 +25,10 @@ class ContactController extends AbstractController
         private JsonResponseFactory $jsonResponseFactory
     ) {}
 
+    /**
+     * @param Request|null $request
+     * @return Response
+     */
     #[Route('/contact/index', name: 'contact', methods: 'GET')]
     public function index(Request $request = null): Response
     {
@@ -38,10 +43,14 @@ class ContactController extends AbstractController
         }catch (Exception $exception){
             return $this->json([
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
+    /**
+     * @param ContactRequest $request
+     * @return Response
+     */
     #[Route('/contact/store', name: 'store_contact', methods: 'POST')]
     public function store(ContactRequest $request): Response
     {
@@ -56,10 +65,15 @@ class ContactController extends AbstractController
         }catch (Exception $exception){
             return $this->json([
                 'message' => $exception->getMessage(),
-            ]);
+            ],500);
         }
     }
 
+    /**
+     * @param ContactRequest $request
+     * @param int $id
+     * @return Response
+     */
     #[Route('/contact/edit/{id}', name: 'edit_contact', methods: 'PATCH')]
     public function edit(ContactRequest $request, int $id): Response
     {
@@ -78,10 +92,14 @@ class ContactController extends AbstractController
         }catch (Exception $exception){
             return $this->json([
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
+    /**
+     * @param int $id
+     * @return Response
+     */
     #[Route('/contact/delete/{id}', name: 'delete_contact', methods: 'DELETE')]
     public function delete(int $id): Response
     {
@@ -118,9 +136,30 @@ class ContactController extends AbstractController
         $contact->setPhoneNumber($data['phone_number']);
         $contact->setBirthday($data['birthday']);
         $contact->setEmail($data['email']);
+//        if(array_key_exists($data['picture'])) $this->addImage($data['picture'], $contact);
         $entityManager->persist($contact);
 
         $entityManager->flush();
         $this->em->getConnection()->commit();
+    }
+
+    /**
+     * @param UploadedFile|null $pictureFile
+     * @param Contact|null $contact
+     * @return void
+     */
+    private function addImage(UploadedFile $pictureFile = null, Contact $contact = null)
+    {
+        if($pictureFile) {
+            $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = md5($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid(). '.' . $pictureFile->guessExtension();
+
+            $pictureFile->move(
+                $this->getParameter('uploads'),
+                $newFilename
+            );
+            $contact->setPicture($newFilename);
+        }
     }
 }
