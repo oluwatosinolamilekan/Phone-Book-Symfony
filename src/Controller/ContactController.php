@@ -50,7 +50,6 @@ class ContactController extends AbstractController
 
         $entityManager = $this->doctrine->getManager();
         try {
-            $this->em->getConnection()->beginTransaction();
             $data = $request->getRequest()->toArray();
             $contact = new Contact();
             $this->extracted($contact, $data, $entityManager);
@@ -113,6 +112,7 @@ class ContactController extends AbstractController
      */
     public function extracted(mixed $contact, array $data, ObjectManager $entityManager): void
     {
+        $this->em->getConnection()->beginTransaction();
         $contact->setFirstName($data['first_name']);
         $contact->setLastName($data['last_name']);
         $contact->setAddress($data['address']);
