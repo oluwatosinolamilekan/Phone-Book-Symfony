@@ -54,6 +54,8 @@ $ php bin/phpunit
 
 - Method: GET
 - URL : `http://127.0.0.1:8000/contacts`. List all contacts in ascending order of first name
+
+
 - URL : `http://127.0.0.1:8000/contact/index?name=request_name`. Request name search for the name user you to search.
 
   
