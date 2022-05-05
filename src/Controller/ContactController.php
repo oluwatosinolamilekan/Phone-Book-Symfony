@@ -31,11 +31,11 @@ class ContactController extends AbstractController
     ) {}
 
     /**
-     * @param Request|null $request
+     * @param Request $request
      * @return Response
      */
     #[Route('/contact/index', name: 'contact', methods: 'GET')]
-    public function index(Request $request = null): Response
+    public function index(Request $request): Response
     {
         try {
             $query = $request->query->get('name');

@@ -57,6 +57,7 @@ class ContactRepository extends ServiceEntityRepository
             ->setParameter('searchTerm', '%'.$data.'%')
             ->orWhere('a.last_name LIKE :searchTerm')
             ->setParameter('searchTerm', '%'.$data.'%')
+            ->setFirstResult(2)
             ->getQuery()
             ->getResult();
     }
@@ -65,6 +66,7 @@ class ContactRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->orderBy('a.first_name', 'ASC')
+            ->setMaxResults(10)
             ->getQuery()
             ->getResult();
     }

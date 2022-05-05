@@ -43,7 +43,6 @@ $ symfony server:start
 $ php bin/console --env=test doctrine:database:create
 $ php bin/console --env=test doctrine:schema:create
 $ php bin/phpunit
-
 ```
 
 ---
@@ -55,7 +54,8 @@ $ php bin/phpunit
 
 - Method: GET
 - URL : `http://127.0.0.1:8000/contacts`
-- Notice: Image below is to search for a name is a contact
+- URL : `http://127.0.0.1:8000/contact/index?name=request_name`. Request name search for the name user you to search.
+- Notice: Also Image below is to search for a name is a contact
   
   ![alt text](searchform.png)
   
