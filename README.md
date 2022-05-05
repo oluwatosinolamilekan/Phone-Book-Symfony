@@ -53,16 +53,23 @@ $ php bin/phpunit
 ---
 There are four routes included on this project to be used.
 
-- Method: GET `http://127.0.0.1:8000/contacts` 
-- Method: GET `http://127.0.0.1:8000/contacts?name=Jane` for searching with contact name
+- Method: GET
+- URL : `http://127.0.0.1:8000/contacts`
+- Notice: Image below is to search for a name is a contact
+  
+  ![alt text](searchform.png)
+  
 ---
-- Method: POST `http://127.0.0.1:8000/contact/store`
+- Method: POST 
+- URL: `http://127.0.0.1:8000/contact/store`
 
+- #### Sending data through postman form-data and image can be attached using the form only
 
-
-- Sending Data through postman form-data
     ![alt text](postform.png)
-- Sending data through raw with json and picture doesnt only in this part:
+
+
+
+##### Sending data through raw with json and picture doesn't only in this part:
 ```
     {
         "first_name": "Jane",
@@ -76,8 +83,20 @@ There are four routes included on this project to be used.
 
 ---
 
-- Method: PUT `http://127.0.0.1:8000/contact/edit/1`
-    
+- Method: PUT
+- DELETE:  `http://127.0.0.1:8000/contact/edit/1`
+
+
+#### Quick Notice: Image are not allowed to be sent through this form. The frontend dev can also send only required attribute he/she intends to change only
+example
+
+- Body:
+```
+    {
+        "first_name": "Lilly",
+    }
+```
+### This is for sending all required attributes he/she intend to change
 - Body:
 ```
     {
@@ -89,9 +108,15 @@ There are four routes included on this project to be used.
         "email": "doe@gmalillydoo.com"
     }
 ```
----
+
+#### This method required you to change picture with a `POST` request only 
+- Method: POST
+- URL: `http://127.0.0.1:8000/contact/edit/picture/18`
 
 
-- Method: DELETE `http://127.0.0.1:8000/contact/delete/1`
+  ![alt text](updatepostform.png)
+
+- Method: DELETE
+- URL: `http://127.0.0.1:8000/contact/delete/1`
 
 ---
