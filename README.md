@@ -58,7 +58,11 @@ There are four routes included on this project to be used.
 ---
 - Method: POST `http://127.0.0.1:8000/contact/store`
 
-- Body:
+
+
+- Sending Data through postman form-data
+    ![alt text](postform.png)
+- Sending data through raw with json and picture doesnt only in this part:
 ```
     {
         "first_name": "Jane",
