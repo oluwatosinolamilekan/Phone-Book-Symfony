@@ -51,7 +51,7 @@ $ php bin/phpunit
 ## Api Documentation
 
 ---
-There are four routes included on this project to be used.
+#### Below are the routes included in the project.
 
 - Method: GET
 - URL : `http://127.0.0.1:8000/contacts`
