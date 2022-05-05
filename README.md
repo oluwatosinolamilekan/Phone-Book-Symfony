@@ -53,11 +53,9 @@ $ php bin/phpunit
 #### Below are the routes included in the project.
 
 - Method: GET
-- URL : `http://127.0.0.1:8000/contacts`
+- URL : `http://127.0.0.1:8000/contacts`. List all contacts in ascending order of first name
 - URL : `http://127.0.0.1:8000/contact/index?name=request_name`. Request name search for the name user you to search.
-- Notice: Also Image below is to search for a name is a contact
-  
-  ![alt text](searchform.png)
+
   
 ---
 - Method: POST 
