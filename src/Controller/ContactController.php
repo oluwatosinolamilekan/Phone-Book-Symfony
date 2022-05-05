@@ -114,6 +114,40 @@ class ContactController extends AbstractController
     }
 
     /**
+     * Update picture of only contact
+     * @param Request $request
+     * @param int $id
+     * @param FileUploader $fileUploader
+     * @return Response
+     * @throws Exception
+     */
+    #[Route('/contact/edit/picture/{id}', name: 'edit_contact', methods: 'POST')]
+    public function editPicture(Request $request, int $id, FileUploader $fileUploader): Response
+    {
+        $contact = $this->em->getRepository(Contact::class)->find($id);
+        if(!$contact){
+            return $this->customerResponse->notFound('The contact cannot be found '. $id);
+        }
+            $entityManager = $this->doctrine->getManager();
+        try{
+            if ($picture = $request->files->get('picture')) {
+                $FileName = $fileUploader->editContactUpload($picture, $contact);
+                $contact->setPicture($FileName);
+            }else{
+                return $this->json([
+                    'status' => 'failed',
+                    'message' => 'Picture required'
+                ], 422);
+            }
+            $data = $request->toArray();
+            $this->extracted($contact, $data, $entityManager);
+            return $this->jsonResponseFactory->create($contact, 200);
+        }catch (Exception $exception){
+            return $this->customerResponse->errorResource($exception->getMessage());
+        }
+    }
+
+    /**
      * delete the given customer.
      * @param int $id
      * @return Response
@@ -144,37 +178,18 @@ class ContactController extends AbstractController
     public function extracted(mixed $contact, array $data, ObjectManager $entityManager): void
     {
         $this->em->getConnection()->beginTransaction();
-        $contact->setFirstName($data['first_name']);
-        $contact->setLastName($data['last_name']);
-        $contact->setAddress($data['address']);
-        $contact->setPhoneNumber($data['phone_number']);
-        $contact->setBirthday($data['birthday']);
-        $contact->setEmail($data['email']);
+        $contact->setFirstName($data['first_name'] ?? $contact->getFirstName());
+        $contact->setLastName($data['last_name'] ?? $contact->getLastName());
+        $contact->setAddress($data['address'] ?? $contact->getAddress());
+        $contact->setPhoneNumber($data['phone_number'] ?? $contact->getPhoneNumber());
+        $contact->setBirthday($data['birthday'] ?? $contact->getBirthday());
+        $contact->setEmail($data['email'] ?? $contact->getEmail());
         $entityManager->persist($contact);
 
         $entityManager->flush();
         $this->em->getConnection()->commit();
     }
 
-    /**
-     * @param UploadedFile|null $pictureFile
-     * @param Contact|null $contact
-     * @return void
-     */
-    private function storeImage(UploadedFile $pictureFile = null, Contact $contact = null)
-    {
-        if($pictureFile) {
-            $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = md5($originalFilename);
-            $newFilename = $safeFilename . '-' . uniqid(). '.' . $pictureFile->guessExtension();
-
-            $pictureFile->move(
-                $this->getParameter('uploads'),
-                $newFilename
-            );
-            $contact->setPicture($newFilename);
-        }
-    }
 
     /**
      * validating form request.

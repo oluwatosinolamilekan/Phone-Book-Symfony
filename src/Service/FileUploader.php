@@ -4,8 +4,10 @@ namespace App\Service;
 
 use Exception;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use function PHPUnit\Framework\isNull;
 
 class FileUploader
 {
@@ -17,7 +19,7 @@ class FileUploader
     /**
      * @throws Exception
      */
-    public function upload(UploadedFile $file)
+    public function upload(UploadedFile $file): string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
@@ -25,12 +27,28 @@ class FileUploader
 
         try {
             $file->move($this->getTargetDirectory(), $fileName);
-        } catch (FileException $e) {
-            throw new Exception($e->getMessage());
-            // ... handle exception if something happens during file upload
+        } catch (FileException $exception) {
+            throw new Exception($exception->getMessage());
         }
 
         return $fileName;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function editContactUpload($contactPicture, $contact): string
+    {
+        try {
+            if(!empty($contactPicture) && !isNull($contactPicture)) {
+                return $contact->setPicture(
+                    new File($this->getParameter('contact_directory') . '/' . $contact->getPicture())
+                );
+            }
+        }catch (FileException $exception){
+            throw new Exception($exception->getMessage());
+        }
+        return $contactPicture;
     }
 
     public function getTargetDirectory()
