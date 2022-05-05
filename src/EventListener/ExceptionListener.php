@@ -23,7 +23,6 @@ class ExceptionListener
         $response = new Response();
         $response->setContent($message);
 
-
         // HttpExceptionInterface is a special type of exception that
         // holds status code and header details
         if ($exception instanceof HttpExceptionInterface) {

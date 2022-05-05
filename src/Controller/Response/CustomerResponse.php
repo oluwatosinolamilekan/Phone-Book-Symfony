@@ -19,7 +19,7 @@ class CustomerResponse extends AbstractController
     public function errorResource($error): Response
     {
         return $this->json([
-            'status' => 'success',
+            'status' => 'failed',
             'message' => $error
         ], 500);
     }
@@ -30,5 +30,25 @@ class CustomerResponse extends AbstractController
             'status' => 'success',
             'message' => $message
         ], 404);
+    }
+
+    public function validationError($validator): JsonResponse
+    {
+        $errors = $validator->validate($this);
+        $messages = ['message' => 'validation_failed', 'errors' => []];
+
+        /** @var \Symfony\Component\Validator\ConstraintViolation  */
+        foreach ($errors as $message) {
+            $messages['errors'][] = [
+                'property' => $message->getPropertyPath(),
+                'message' => $message->getMessage(),
+            ];
+        }
+        if (count($messages['errors']) > 0) {
+            $response = new JsonResponse($messages, 400);
+            $response->send();
+
+            exit;
+        }
     }
 }

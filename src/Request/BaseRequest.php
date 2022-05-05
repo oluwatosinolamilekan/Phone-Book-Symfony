@@ -12,6 +12,7 @@ abstract class BaseRequest
     public function __construct(protected ValidatorInterface $validator)
     {
         $this->populate();
+        dd($this->populate());
 
         if ($this->autoValidateRequest()) {
             $this->validate();
@@ -54,7 +55,6 @@ abstract class BaseRequest
             }
         }
     }
-
 
 
     protected function autoValidateRequest(): bool

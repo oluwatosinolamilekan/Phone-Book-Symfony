@@ -8,11 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
-#[ApiResource(
-    collectionOperations: ['get', 'post'],
-    itemOperations: ['get','put', 'patch'],
-    attributes: ['pagination_items_per_page' => 5],
-)]
+//#[ApiResource(
+//    collectionOperations: ['get', 'post'],
+//    itemOperations: ['get','put', 'patch'],
+//    attributes: ['pagination_items_per_page' => 5],
+//)]
 class Contact
 {
     #[ORM\Id]
@@ -21,7 +21,7 @@ class Contact
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank(payload: ['severity' => 'error'])]
+    #[Assert\NotBlank]
     private $first_name;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -37,7 +37,7 @@ class Contact
     private $phone_number;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[NotBlank()]
+    #[Assert\NotBlank]
     private $email;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -45,6 +45,11 @@ class Contact
     private $birthday;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\File(
+        maxSize: '1024k',
+        mimeTypes: ['image/png', 'image/jpeg'],
+        mimeTypesMessage: 'Please upload a valid picture type png or jpeg',
+    )]
     private $picture;
 
     public function getId(): ?int
@@ -135,4 +140,5 @@ class Contact
 
         return $this;
     }
+
 }

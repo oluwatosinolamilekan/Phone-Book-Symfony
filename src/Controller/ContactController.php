@@ -5,17 +5,24 @@ namespace App\Controller;
 use App\Entity\Contact;
 use App\Controller\Response\CustomerResponse;
 use App\Factory\JsonResponseFactory;
+use App\Form\ContactType;
 use App\Repository\ContactRepository;
 use App\Request\ContactRequest;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 class ContactController extends AbstractController
 {
     public function __construct(
@@ -48,18 +55,36 @@ class ContactController extends AbstractController
 
     /**
      * store the given customer.
-     * @param ContactRequest $request
+     * @param Request $request
+     * @param FileUploader $fileUploader
      * @return Response
+     * @throws Exception
      */
     #[Route('/contact/store', name: 'store_contact', methods: 'POST')]
-    public function store(ContactRequest $request): Response
+    public function store(Request $request, FileUploader $fileUploader): Response
     {
-        $request->validate();
+        $contact = new Contact();
+        $form = $this->createForm(ContactType::class, null, [
+            'csrf_protection' => false,
+        ]);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            $errors = $this->getErrorsFromForm($form);
+            $data = [
+                'title' => 'Validation Error',
+                'errors' => $errors
+            ];
+            return new JsonResponse($data, 400);
+        }
+        $picture = $request->files->get('picture');
 
         $entityManager = $this->doctrine->getManager();
         try {
-            $data = $request->getRequest()->toArray();
-            $contact = new Contact();
+            $data = $request->request->all();
+            if ($picture) {
+                $FileName = $fileUploader->upload($picture);
+                $contact->setPicture($FileName);
+            }
             $this->extracted($contact, $data, $entityManager);
             return $this->jsonResponseFactory->create($contact, 201);
         }catch (Exception $exception){
@@ -83,7 +108,6 @@ class ContactController extends AbstractController
             if(!$contact){
                 return $this->customerResponse->notFound('The contact cannot be found '. $id);
             }
-
             $this->extracted($contact, $data, $entityManager);
             return $this->jsonResponseFactory->create($contact, 200);
         }catch (Exception $exception){
@@ -128,7 +152,6 @@ class ContactController extends AbstractController
         $contact->setPhoneNumber($data['phone_number']);
         $contact->setBirthday($data['birthday']);
         $contact->setEmail($data['email']);
-        if(isset($data['picture'])) $this->storeImage($data['picture'], $contact);
         $entityManager->persist($contact);
 
         $entityManager->flush();
@@ -153,5 +176,25 @@ class ContactController extends AbstractController
             );
             $contact->setPicture($newFilename);
         }
+    }
+
+    /**
+     * validating form request.
+     * @return array
+     */
+    private function getErrorsFromForm(FormInterface $form): array
+    {
+        $errors = [];
+        foreach ($form->getErrors() as $error) {
+            $errors[] = $error->getMessage();
+        }
+        foreach ($form->all() as $childForm) {
+            if ($childForm instanceof FormInterface) {
+                if ($childErrors = $this->getErrorsFromForm($childForm)) {
+                    $errors[$childForm->getName()] = $childErrors;
+                }
+            }
+        }
+        return $errors;
     }
 }
