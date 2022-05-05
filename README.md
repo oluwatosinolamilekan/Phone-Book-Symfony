@@ -57,7 +57,6 @@ $ php bin/phpunit
 
 
 - URL : `http://127.0.0.1:8000/contact/index?name=request_name`. Request name search for the name user you to search.
-
   
 ---
 - Method: POST 
