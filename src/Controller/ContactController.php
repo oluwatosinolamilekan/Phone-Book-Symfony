@@ -90,7 +90,7 @@ class ContactController extends AbstractController
     }
 
     /**
-     * Update the given customer.
+     * Update the given customer without sending image.
      * @param ContactRequest $request
      * @param int $id
      * @return Response
