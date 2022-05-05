@@ -48,7 +48,7 @@ class Contact
     #[Assert\File(
         maxSize: '1024k',
         mimeTypes: ['image/png', 'image/jpeg'],
-        mimeTypesMessage: 'Please upload a valid picture type png or jpeg',
+        mimeTypesMessage: 'Please upload a valid picture type png or jpeg or file length is more than 1024k',
     )]
     private $picture;
 
